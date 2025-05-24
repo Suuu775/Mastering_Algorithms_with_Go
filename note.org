@@ -1,4 +1,4 @@
-#+title: Mastering Algorithms with C
+#+title: Mastering Algorithms with Go
 #+description: the note of "Mastering Algorithms with C"
 #+author: Su
 
@@ -212,6 +212,94 @@ func (lst *CList) Rem_next(element *CListElmt) (any,error)
 #+end_src
 返回值: 如果移除成功,返回(value,nil),否则返回(nil,error)
 描述: 从lst指向的循环链表中移除由element指定的元素.
-复制度: O(1)
+复杂度: O(1)
 ** 循环链表的实现
 [[file:src/ch5/clist.go][循环链表]]
+* 第6章 栈和队列
+** 栈的描述
+栈的一个显著特征是它按照先进后出的方式储存和删除元素(FILO).
+** 栈的接口的定义
+*** NewStack
+#+begin_src go
+func NewStack() *Stack
+#+end_src
+返回值: 返回指向栈的指针
+描述: 初始化栈
+复杂度: O(1)
+*** Push
+#+begin_src go
+func (s *Stack) Push(data any)
+#+end_src
+返回值: 无
+描述: 将data推入栈
+复杂度: O(1)
+*** Pop
+#+begin_src go
+func (s *Stack) Pop() (any, error)
+#+end_src
+返回值: (any,error)
+描述: 将栈顶的data推出(如果有)
+复杂度: O(1)
+*** Top
+#+begin_src go
+func (s *Stack) Top() any
+#+end_src
+返回值:栈顶的数据
+描述: 返回栈顶的数据
+复杂度: O(1)
+*** Size
+#+begin_src go
+func (s *Stack) Size() int
+#+end_src
+返回值:栈的大小
+描述:返回栈的大小
+复杂度:O(1)
+** 栈的实现
+此栈使用单链表定义.
+[[file:src/ch6/stack.go][栈]]
+** 队列的描述
+队列的一个显著特征是它按照先进先出的方式储存、检索、删除元素(FIFO).
+** 队列的接口的定义
+*** NewQueue
+#+begin_src go
+func NewQueue() *Queue
+#+end_src
+返回值:指向队列的指针
+描述: 初始化队列
+复杂度:O(1)
+*** Pop
+#+begin_src go
+func (queue *Queue) Pop() (any,error)
+#+end_src
+返回值:队列头部值或错误
+描述:删除首个元素
+复杂度: O(1)
+*** Push
+#+begin_src go
+func (queue *Queue) Push(data any)
+#+end_src
+返回值: 无
+描述:向队列尾部插入元素
+复杂度:O(1)
+*** Front
+#+begin_src go
+func (queue *Queue) Front() any
+#+end_src
+返回值: 队列头部元素值或nil
+描述: 访问第一个元素
+复杂度: O(1)
+*** Back
+#+begin_src go
+func (queue *Queue) Back() any
+#+end_src
+返回值: 队列尾部值或错误
+描述: 访问最后一个元素
+复杂度: O(1)
+** 队列的实现
+结构Queue是队列的数据结构.同栈一样,也用
+#+begin_src go
+type Queue struct{
+	list *ch5.List
+}
+#+end_src
+来定义它.

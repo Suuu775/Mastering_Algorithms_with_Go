@@ -18,43 +18,43 @@ func DList_init() *DList {
 	return &DList{}
 }
 
-func (lst *DList) Ins_next(element *DListElmt,data any) error{
+func (lst *DList) Ins_next(element *DListElmt, data any) error {
 	new_element := &DListElmt{data: data}
 
 	// 不允许空元素插入除非列表为空
-	if  element == nil && lst.len !=0{
-		return errors.New("Don't insert an void element when dlist len is bigger 0")
+	if element == nil && lst.len != 0 {
+		return errors.New("don't insert an void element when dlist len is bigger 0")
 	}
 
-	if lst.len == 0{
-		lst.head = new_element;
-		lst.head.prev = nil;
-		lst.head.next = nil;
-		lst.tail = new_element;
+	if lst.len == 0 {
+		lst.head = new_element
+		lst.head.prev = nil
+		lst.head.next = nil
+		lst.tail = new_element
 	} else {
-		new_element.next = element.next;
-		new_element.prev = element;
+		new_element.next = element.next
+		new_element.prev = element
 
-		if element.next == nil{
+		if element.next == nil {
 			lst.tail = new_element
 		} else {
-			element.next.prev = new_element;
+			element.next.prev = new_element
 		}
-		element.next = new_element;
+		element.next = new_element
 	}
 	lst.len++
 	return nil
 }
 
-func (lst *DList) Ins_prev(element *DListElmt,data any) error{
+func (lst *DList) Ins_prev(element *DListElmt, data any) error {
 	new_element := &DListElmt{data: data}
 
 	// 不允许空元素插入除非列表为空
-	if  element == nil && lst.len !=0{
-		return errors.New("Don't insert an void element when dlist len is bigger 0")
+	if element == nil && lst.len != 0 {
+		return errors.New("don't insert an void element when dlist len is bigger 0")
 	}
 
-	if lst.len == 0{
+	if lst.len == 0 {
 		// 当列表为空时处理插入
 		lst.head = new_element
 		lst.head.prev = nil
@@ -65,7 +65,7 @@ func (lst *DList) Ins_prev(element *DListElmt,data any) error{
 		new_element.next = element
 		new_element.prev = element.prev
 
-		if element.prev == nil{
+		if element.prev == nil {
 			lst.head = new_element
 		} else {
 			element.prev.next = new_element
@@ -78,47 +78,47 @@ func (lst *DList) Ins_prev(element *DListElmt,data any) error{
 
 func (lst *DList) Remove(element *DListElmt) (any, error) {
 
-    if lst.len == 0 || element == nil {
-        return nil, errors.New("cannot remove from empty list or nil element")
-    }
+	if lst.len == 0 || element == nil {
+		return nil, errors.New("cannot remove from empty list or nil element")
+	}
 
-    data := element.data
-    if element == lst.head {
-        lst.head = element.next
-        if lst.head == nil {
-            lst.tail = nil
-        } else {
-            lst.head.prev = nil
-        }
-    } else {
-        element.prev.next = element.next
-        if element.next == nil {
-            lst.tail = element.prev
-        } else {
-            element.next.prev = element.prev
-        }
-    }
+	data := element.data
+	if element == lst.head {
+		lst.head = element.next
+		if lst.head == nil {
+			lst.tail = nil
+		} else {
+			lst.head.prev = nil
+		}
+	} else {
+		element.prev.next = element.next
+		if element.next == nil {
+			lst.tail = element.prev
+		} else {
+			element.next.prev = element.prev
+		}
+	}
 
-    lst.len--
+	lst.len--
 
-    return data, nil
+	return data, nil
 }
 
-func (lst *DList) Destroy(){
-	for lst.len != 0{
+func (lst *DList) Destroy() {
+	for lst.len != 0 {
 		lst.Remove(lst.head)
 	}
 }
 
-func (lst *DList) Len() int{
+func (lst *DList) Len() int {
 	return lst.len
 }
 
-func (lst *DList) Head() *DListElmt{
+func (lst *DList) Head() *DListElmt {
 	return lst.head
 }
 
-func (lst *DList) Tail() *DListElmt{
+func (lst *DList) Tail() *DListElmt {
 	return lst.tail
 }
 
@@ -130,10 +130,10 @@ func (lst *DList) Is_tail(elmt *DListElmt) bool {
 	return lst.Tail() == elmt
 }
 
-func (elmt *DListElmt) Next() *DListElmt{
+func (elmt *DListElmt) Next() *DListElmt {
 	return elmt.next
 }
 
-func (elmt *DListElmt) Prev() *DListElmt{
+func (elmt *DListElmt) Prev() *DListElmt {
 	return elmt.prev
 }
