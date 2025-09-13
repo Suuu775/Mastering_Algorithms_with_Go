@@ -3,11 +3,13 @@ package main
 import (
 	"fmt"
 
-	"github.com/Suuu775/Mastering_Algorithms_with_C/src/ch9"
+	"github.com/Suuu775/Mastering_Algorithms_with_C/src/ch7"
 )
 
+
 func main() {
-	bistree := ch9.NewAVLTree[int]()
-	bistree.Append(1, 2, 3, 5, 6, 7)
-	fmt.Println(bistree)
+	a := []int{}
+	b := []int{2,5,7,9,11,8}
+
+	fmt.Println(ch7.Intersection_slice[int](a, b))
 }

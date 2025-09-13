@@ -304,6 +304,106 @@ type Queue struct{
 #+end_src
 来定义它.
 [[file:src/ch6/queue.go][queue]]
+* 第7章 集合
+** 集合介绍
+*** 集合概念
+集合是相关联成员的无序组合, 且每个成员在集合中仅出现一次.
+*** 集合定义
+1. 没有包含任何成员的集合称为空集. 集合的所有可能成员称为全域.
+2. 如果两个集合中所包含的成员完全一样, 则称这两个集合相等.
+3. 如果集合 S2 包含另一个集合 S1 所有的成员, 则 S1 是 S2 的子集.$S_{1} \in S_{2}$表示 S1 是 S2 的子集, $S_{1} \not\in S_{2}$表示 S1 不是 S2 的子集
+*** 集合的基本操作
+1. 两个集合 S1 和 S2 的并集也是一个集合, 记为 Su, 它包含了 S1 和 S2 中的所有成员.
+2. 两个集合 S1 和 S2 的交集也是一个集合, 记为 Si, 它只包含同时存在于 S1 和 S2 中的成员.
+3. 两个集合 S1 和 S2 的差集也是一个集合, 记为 Sd, 它只包含在 S1 中出现过且不属于S2 的成员.
+*** 集合性质
+1. 某个集合与空集的交集结果一定是空集, 某个集合与空集的并集结果还是原来的集合本身. 即$ S \cup \emptyset = S \\ S\cap \emptyset = \emptyset $
+2. 与集合本身求交集结果还是集合本身, 同样的, 与集合本身求并集结果也还是集合本身. 即$S \cup S = S \quad  S \cap S = S$
+3. 集合 S1 与集合 S2 的交集其结果等同于集合 S2 与集合 S1 的交集. 同样的道理也适用于并集的情况. 即$S_{1} \cup S_{2} = S_{2} \cup S_{1} \quad S_{1} \cap S_{2} = S_{2} \cap S_{1}$
+4. 一组集合的交集可以按照任意顺序来求解, 同样的道理也适用于并集的情况. 即$S_{1} \cup (S_{2} \cup S_{3}) = (S_{1} \cup S_{2}) \cup S_{3} \quad S_{1} \cap (S_{2} \cap S_{3}) = (S_{1} \cap S_{2}) \cap S_{3}$
+5. 某集合与其他两个集合的并集相交的结果可以按照一种分配的方式来解决, 同样的道理也适用于求解某集合与其他两个集合的交集相合并的结果. 即$A \cap (B \cup C) = (A \cap B) \cup (A \cap C) \quad A \cup (B \cap C) = (A \cup B) \cap (A \cup C)$
+6. 某集合与该集合和另一个集合的并集相交的结果等于该集合本身. 同样的道理也适用于求解某集合与该集合和另一个集合的交集相合并的结果. 即$S_{1} \cap (S_{1} \cup S_{2})=S_{1} \quad S_{1} \cup (S_{1} \cap S_{2}) = S_{1}$
+7. 当求解一个集合与其他两个集合的交集或并集之差时,可以得到一个有趣的结论. 这种行为称为德摩根定律. 即$S_{1} - (S_{2} \cup S_{3}) = (S_{1} - S_{2}) \cup (S_{1} - S_{3}) \quad S_{1} - (S_{2} \cap S_{3}) = (S_{1} - S_{2}) \cap (S_{1} - S_{3})$
+** 集合接口的定义
+*** NewSet
+#+begin_src go
+func NewSet[T cmp.Ordered]() *Set[T]
+#+end_src
+返回值: 指向 Set 的指针.
+描述: 初始化 Set.
+复杂度: O(1).
+*** Destroy
+#+begin_src go
+func (set *Set[T]) Destory()
+#+end_src
+返回值: 无
+描述: 销毁 Set
+复杂度: O(1)
+*** Insert
+#+begin_src go
+func (set *Set[T]) Insert(key T)
+#+end_src
+返回值: 将 key 插入
+描述: 初始化 Set.
+复杂度: O(log(n)).
+*** Remove
+#+begin_src go
+func (set *Set[T]) Remove(key T) bool
+#+end_src
+返回值: bool值
+描述: 判断 key 是否存在于 Set, 若有则删除返回true, 反之返回 false.
+复杂度: O(log(n))
+*** Union
+#+begin_src go
+func (lhs *Set[T]) Union(rhs *Set[T]) *Set[T]
+#+end_src
+返回值: 指向 Set[T] 的指针
+描述: 对两个 Set 计算并集, 并返回结果
+复杂度: O(n+m)
+*** Intersection
+#+begin_src go
+func (lhs *Set[T]) Intersection(rhs *Set[T]) *Set[T]
+#+end_src
+返回值: 指向 Set[T] 的指针
+描述: 对两个 Set 计算交集, 并返回结果
+复杂度: O(n+m)
+*** Difference
+#+begin_src go
+func (lhs *Set[T]) Difference(rhs *Set[T]) *Set[T]
+#+end_src
+返回值: 指向 Set[T] 的指针
+描述: 对两个 Set 计算差集, 并返回结果
+复杂度: O(n+m)
+*** IsMember
+#+begin_src go
+func (set *Set[T]) IsMember(key T) bool
+#+end_src
+返回值: bool值
+描述: 判断 key 是否存在于 Set
+复杂度: O(log(n))
+*** IsSubset
+#+begin_src go
+func(lhs *Set[T]) IsSubset (rhs *Set[T]) bool
+#+end_src
+返回值: bool值
+描述: 判断 lhs 是否为 rhs 的一个子集
+复杂度: O(min(n,m))
+*** IsEqual
+#+begin_src go
+func (lhs *Set[T]) IsEqual(rhs *Set[T]) bool
+#+end_src
+返回值: bool值
+描述: 判断 lhs 与 rhs 是否相等
+复杂度: O(min(n,m))
+*** GetSize
+#+begin_src go
+func (set *Set[T]) GetSize() int
+#+end_src
+返回值: Set的大小
+描述: 获取 Set 的大小
+复杂度: O(1)
+** 集合的实现
+[[file:src/ch7/set.go][Set]]
 * 第9章 树
 ** 二叉树介绍
 *** 二叉树定义

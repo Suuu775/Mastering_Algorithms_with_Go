@@ -3,6 +3,7 @@ package ch9
 import (
 	"cmp"
 	"fmt"
+	"iter"
 	"strings"
 )
 
@@ -259,7 +260,7 @@ func (tree *AVLTree[T]) Append(keys ...T) {
 	}
 }
 
-// format avl tree
+// print avl tree
 func (tree *AVLTree[T]) String() string {
 	if tree == nil {
 		return "Nil"
@@ -269,11 +270,84 @@ func (tree *AVLTree[T]) String() string {
 	}
 }
 
-// format avl node
+// print avl node
 func stringNode[T cmp.Ordered](node *AVLNode[T], indent_num int) string {
 	if node == nil {
 		return "Nil"
 	}
 	indent_string := strings.Repeat(" ", indent_num)
 	return fmt.Sprintf("%s\n%svalue:%v\n%sheight:%d\n%s  leftNode:%s\n%s  rightNode:%s\n", indent_string, "  "+indent_string, node.key, "  "+indent_string, node.height, indent_string+"  ", stringNode(node.left, indent_num+2), indent_string+"  ", stringNode(node.right, indent_num+2))
+}
+
+// from the avl tree get a sorted slice
+func (tree *AVLTree[T]) GetSortedSlice() []T {
+	if tree.root == nil {
+		return nil
+	}
+	slice := make([]T, 0, tree.size)
+	getSortedSliceHelper(tree.root, &slice)
+	return slice
+}
+
+// from the avl node get a sorted slice
+func getSortedSliceHelper[T cmp.Ordered](node *AVLNode[T], slice *[]T) {
+	if node == nil {
+		return
+	}
+	getSortedSliceHelper(node.left, slice)
+	*slice = append(*slice, node.key)
+	getSortedSliceHelper(node.right, slice)
+}
+
+// build the avl tree from sorted slice
+func BuildFromSortedSlice[T cmp.Ordered](arr []T) *AVLTree[T] {
+	tree := &AVLTree[T]{}
+	tree.root = buildBalanced(arr, 0, len(arr)-1)
+	tree.size = len(arr)
+	return tree
+}
+
+// build the avl node from sorted slice
+func buildBalanced[T cmp.Ordered](arr []T, start, end int) *AVLNode[T] {
+	if start > end {
+		return nil
+	}
+
+	mid := (start + end) / 2
+	node := &AVLNode[T]{
+		key: arr[mid],
+	}
+
+	node.left = buildBalanced(arr, start, mid-1)
+	node.right = buildBalanced(arr, mid+1, end)
+
+	node.updateHeight()
+
+	return node
+}
+
+func (tree *AVLTree[T]) Iter() iter.Seq[T] {
+	return func(yield func(T) bool) {
+		iterNode(tree.root, yield)
+	}
+}
+
+func iterNode[T cmp.Ordered](node *AVLNode[T], yield func(T) bool) bool {
+	if node == nil {
+		return true
+	}
+
+	if !iterNode(node.left, yield) {
+		return false
+	}
+
+	if !yield(node.key) {
+		return false
+	}
+
+	return iterNode(node.right, yield)
+}
+
+func (tree *AVLTree[T]) GetSize() int{
+	return tree.size
 }
